@@ -37,6 +37,8 @@ export async function login({ email, password}) {
 
 // ressources protégées
 export async function getNotes(token) {
+    console.log(token);
+    
     const res = await fetch(`${BASE_URL}/notes`,{
         method: "GET",
         headers: { Authorization : `Bearer ${token}` },
@@ -50,10 +52,13 @@ export async function getNotes(token) {
     return res.json();
 }
 
-export async function getNote(token, id) {
+export async function getNote({token, id}) {
     const res = await fetch(`${BASE_URL}/notes/${id}`,{
         method: "GET",
-        headers: { Authorization : `Bearer ${token}` },
+        headers: {
+            "Content-Type" : "application/json",
+            Authorization : `Bearer ${token}` 
+        },
     });
     
     if(!res.ok){
@@ -106,10 +111,18 @@ export async function deleteNote(token, id) {
     return res;
 }
 
-export async function updateNote(token, title, content, id) {
+export async function updateNote({token, title, content, id}) {
+    console.log("token",token);
+    console.log("title",title);
+    console.log("content",content);
+    console.log("id:",id);
+    
     const res = await fetch(`${BASE_URL}/notes/${id}`,{
         method: "PUT",
-        headers: { Authorization : `Bearer ${token}` },
+        headers: { 
+            "Content-Type" : "application/json",
+            Authorization : `Bearer ${token}` 
+        },
         body:JSON.stringify({title,content})
     });
 

@@ -4,7 +4,10 @@ import NoteForm from '../components/NoteForm.jsx';
 function CreateNote() {
 
     return (
-        <NoteForm/>
+        <>
+            <h1>Création de note</h1>
+            <NoteForm/>
+        </>
     )
 }
 

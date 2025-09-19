@@ -1,30 +1,53 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { getToken} from '../auth';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { createNote } from '../api.js';
+import { createNote, updateNote } from '../api.js';
 
-function NoteForm() {
-    const [content,setContent] = useState("");
-    const [title,setTitle] = useState("");
+function NoteForm({note}) {
+    const [content,setContent] = useState(note?.content);
+    const [title,setTitle] = useState(note?.title);
     const [error,setError] = useState(null);
     const token = getToken();
     const navigate = useNavigate();
     const location = useLocation();
-  
+
+    console.log(content);
+    console.log(title);
+    
+    
+
     const onSubmit = async (e) =>{
         e.preventDefault();
         setError(null);
         
-        try {
-            const res = await createNote({title,content,token});
-            console.log("Response = ",res);
-            const redirectTo = location.state?.from?.pathname || "/notes";
-            navigate(redirectTo,{ replace:true})
-        }catch(err){
-            console.error(err)
-            setError("Erreur de création")
+        if(note){
+            try {
+                console.log(note.id);   
+                const res = await updateNote({token,title,content,id:note.id});
+                console.log("Response = ",res);
+                const redirectTo = location.state?.from?.pathname || "/notes";
+                navigate(redirectTo,{ replace:true})
+            }catch(err){
+                console.error(err)
+                setError("Erreur de modification")
+            }
+        } else {
+            try {
+                const res = await createNote({title,content,token});
+                console.log("Response = ",res);
+                const redirectTo = location.state?.from?.pathname || "/notes";
+                navigate(redirectTo,{ replace:true})
+            }catch(err){
+                console.error(err)
+                setError("Erreur de création")
+            }
         }
     }
+
+    useEffect(()=>{
+        setContent(note?.content);
+        setTitle(note?.title);
+    },[])
   
     return (
         <div>
